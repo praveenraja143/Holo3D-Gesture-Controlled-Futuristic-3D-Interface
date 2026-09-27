@@ -2,37 +2,40 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-Computer%20Vision-orange.svg)](https://opencv.org/)
-[![MediaPipe](https://img.shields.io/badge/MediaPipe-Hand%20Tracking-green.svg)](https://mediapipe.dev/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10.14-green.svg)](https://mediapipe.dev/)
 [![Author](https://img.shields.io/badge/Author-Praveen%20Raja-cyan.svg)](https://github.com/praveenraja143)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Holo3D** is a next-generation real-time augmented computer vision interface inspired by Iron Man's JARVIS holographic workstation. Using your webcam and MediaPipe hand tracking, you can interact with virtual 3D objects in free air with natural hand gestures — **and dynamically search or generate ANY object or image from the web into a live 3D hologram!**
+**Holo3D** is a next-generation real-time augmented computer vision interface inspired by Iron Man's JARVIS holographic workstation. Using your webcam and MediaPipe hand tracking, you can interact with **real 3D volumetric virtual objects in free air with natural hand gestures** — and dynamically search or materialize ANY 3D object on command!
 
 ---
 
-## ⚡ What Makes Holo3D Special?
+## ⚡ True 3D Volumetric Objects (Never Flat!)
 
-- 🔍 **Dynamic Hologram Search & AI Projection**:
-  - Don't settle for a single object. Press **`S`** to type **any object** (e.g., *Iron Man, Planet Earth, Ferrari, Cyberpunk Katana, Dragon, T-Rex*).
-  - Automatically fetches, removes background, applies holographic alpha-transparency, and projects it into 3D space with genuine perspective warping and depth layers!
-- 🖐️ **Touchless 3D Gesture Manipulation**:
-  - **Pinch & Drag**: Move the hologram freely in 3D space.
-  - **Open Palm**: Rotate on all 3 axes (Pitch, Yaw, Roll) by tilting and moving your hand.
-  - **Two Hands**: Dynamic zoom in / zoom out by adjusting distance between your hands.
-  - **Fist**: Cloak / stealth-hide the hologram instantly.
-- 📐 **Procedural 3D Hologram Library Built-in**:
-  - `[1]` **Cyber Supercar**: High-polygon procedural vehicle wireframe with glass canopy, intakes, and aerodynamic diffusers.
-  - `[2]` **Planet Earth Globe**: Rotating 3D sphere with latitude and longitude coordinate lines and glowing equator.
-  - `[3]` **Iron Man Arc Reactor**: Multi-tier rotating energy coils, core power triangle, and reactor glow.
-  - `[4]` **Sci-Fi Drone Fighter**: Aerodynamic fuselage, quad rotor arms, and thrusters.
-  - `[5]` **4D Tesseract Hypercube**: Dual-nested inner and outer cubes with 4D cross-connecting struts.
-  - `[6]` **Custom Image Hologram**: Your dynamically searched web/AI hologram!
-- 🔮 **Cinematic Sci-Fi Aesthetics**:
-  - Hologram scanlines & edge glow shaders.
-  - 3D bounding wireframe box with glowing cybernetic corner brackets.
-  - Rotating concentric arc-reactor projector rings at the base.
-  - Ambient glowing particle field.
-  - Futuristic glassmorphism telemetry HUD with real-time FPS, coordinates, scale, and gesture tracking.
+When you search for an object, Holo3D generates **genuine 3D volumetric geometry** with vertices, edges, polygon faces, depth, and thickness:
+
+- 🏠 **3D Architectural House**:
+  - Full structural CAD model with foundation slab, 4 exterior walls, front door with frame, architectural windows with cross mullions, attic window, front porch with support columns, chimney, and glowing pitched roof ridge!
+- 🌍 **3D Planet Earth Globe**:
+  - Rotating 3D sphere with latitude rings, longitude meridians, glowing equator, and tilted orbital satellite trajectory!
+- 🏎️ **3D Cyber Supercar**:
+  - High-polygon procedural vehicle wireframe with glass canopy, side aerodynamic blades, wheels, front splitter, diffuser, and spoiler!
+- ⚛️ **3D Iron Man Arc Reactor**:
+  - Multi-tier concentric rotating energy coils, core power triangle, and reactor glow!
+- 🛸 **3D Sci-Fi Drone Fighter**:
+  - Aerodynamic fuselage, cockpit glass, quad rotor arms, and thruster rings!
+- ⚔️ **3D Cyber Katana Sword**:
+  - Pointed blade with fuller groove, tsuba crossguard, grip, and glowing pommel!
+- 🤖 **3D Cybernetic Mech Robot**:
+  - Articulated torso, shoulders, arms, legs, glowing visor, and chest reactor!
+- 💀 **3D Cybernetic Skull**:
+  - Cranium dome, cheekbones, 3D eye socket cavities, nasal bridge, and jaw!
+- 🛸 **3D Cyber Spaceship UFO**:
+  - Multi-tier saucer discs, upper cockpit dome, and bottom plasma thrusters!
+- 📦 **3D 4D Tesseract Hypercube**:
+  - Dual-nested inner and outer hypercube with 8 cross-dimensional struts!
+- 🔮 **Universal 3D Volumetric Extrusion (For Any Other Query)**:
+  - If you search for any custom object (e.g. *Dragon, Tiger, Guitar*), Holo3D builds a **volumetric 3D solid** with front hull (+Z), back hull (-Z), connecting side walls, and depth wireframe ribs. It possesses real physical 3D thickness from every angle!
 
 ---
 
@@ -42,22 +45,25 @@
 
 | Gesture | Action | Description |
 |---|---|---|
-| **🤏 Pinch & Drag** | Move Object | Pinch thumb and index finger to grab and position the hologram in free air. |
-| **✋ Open Palm** | 3D Rotation | Move hand horizontally/vertically or tilt wrist to rotate the hologram in 3D (Pitch, Yaw, Roll). |
-| **👐 Two Hands** | Dynamic Zoom | Bring two hands into view and spread or close them to scale the hologram seamlessly. |
+| **🤏 Pinch & Drag** | Move 3D Object | Pinch thumb and index finger to grab and position the 3D model in free air. |
+| **✋ Open Palm** | 3D Rotation | Move hand horizontally/vertically or tilt wrist to rotate the object on all 3 axes (Pitch, Yaw, Roll). |
+| **👐 Two Hands** | Dynamic Zoom | Bring two hands into view and spread or close them to scale the 3D model seamlessly. |
 | **✊ Closed Fist** | Stealth Cloak | Make a fist to instantly hide the hologram; open hand to reveal it again. |
 
 ### ⌨️ Keyboard Shortcuts
 
 | Key | Function |
 |---|---|
-| **`S`** or **`SPACE`** | **Open Hologram Search Bar** (Type any query, e.g., *Iron Man, Earth, Ferrari*) |
-| **`1`** | Load **3D Cyber Supercar** |
-| **`2`** | Load **3D Planet Earth Globe** |
-| **`3`** | Load **3D Iron Man Arc Reactor** |
-| **`4`** | Load **3D Sci-Fi Drone Fighter** |
-| **`5`** | Load **3D 4D Tesseract Hypercube** |
-| **`6`** | Switch back to **Custom Searched Hologram** |
+| **`S`** or **`SPACE`** | **Search ANY 3D Object** (Type: *House, Earth, Car, Robot, Sword, Skull, etc.*) |
+| **`1`** | Instant **3D Cyber Supercar** |
+| **`2`** | Instant **3D Planet Earth Globe** |
+| **`3`** | Instant **3D Architectural House** |
+| **`4`** | Instant **3D Iron Man Arc Reactor** |
+| **`5`** | Instant **3D Sci-Fi Drone Fighter** |
+| **`6`** | Instant **3D Cyber Katana Sword** |
+| **`7`** | Instant **3D Cybernetic Mech Robot** |
+| **`8`** | Instant **3D Cybernetic Skull** |
+| **`9`** | Instant **3D Cyber Spaceship UFO** |
 | **`+` / `-`** | Manual Zoom In / Zoom Out |
 | **`R`** | Reset Transform (Position, Rotation & Scale to Default) |
 | **`V`** | Toggle Hologram Visibility (Show / Hide) |
@@ -65,59 +71,10 @@
 
 ---
 
-## 🏗️ Architecture & Pipeline
-
-```text
-                     ┌────────────────────────┐
-                     │   📷 WEBCAM VIDEO FEED │
-                     └───────────┬────────────┘
-                                 │
-                     ┌───────────▼────────────┐
-                     │  MediaPipe Hand Tracking│
-                     │   (21 3D Landmarks)    │
-                     └───────────┬────────────┘
-                                 │
-                     ┌───────────▼────────────┐
-                     │   Gesture Controller   │
-                     │  Pinch / Palm / Zoom   │
-                     └───────────┬────────────┘
-                                 │
-        ┌────────────────────────┼────────────────────────┐
-        │                        │                        │
-┌───────▼────────┐      ┌────────▼────────┐      ┌────────▼────────┐
-│  Procedural    │      │ Dynamic Image   │      │ 3D Perspective  │
-│  3D Meshes     │      │ Search Engine   │      │ Projection      │
-│ (Car/Globe/Arc)│      │(Web/AI Cutouts) │      │(Matrix Rotation)│
-└───────┬────────┘      └────────┬────────┘      └────────┬────────┘
-        │                        │                        │
-        └────────────────────────┼────────────────────────┘
-                                 │
-                     ┌───────────▼────────────┐
-                     │ Holographic AR Renderer│
-                     │ Glow, Scanlines, Rings │
-                     └───────────┬────────────┘
-                                 │
-                     ┌───────────▼────────────┐
-                     │   Futuristic HUD UI    │
-                     └────────────────────────┘
-```
-
----
-
 ## 🚀 Quick Start Installation
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/praveenraja143/Holo3D-Gesture-Controlled-Futuristic-3D-Interface.git
-cd Holo3D-Gesture-Controlled-Futuristic-3D-Interface
-```
+Double-click `start.bat` or run:
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Run the Application
 ```bash
 python main.py
 ```

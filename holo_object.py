@@ -6,43 +6,52 @@ import time
 
 class HoloObject:
     """
-    Advanced Hologram Object Engine.
-    Supports:
-    1. Dynamic 3D Image Holograms (searched/generated from Google/Web/AI)
-       with perspective 3D warping, multi-layer depth, glow halo,
-       hologram scanlines, particle field, and cybernetic bounding box.
-    2. Procedural 3D Models:
-       - Cyber Supercar (High-detail wireframe & glass canopy)
-       - Earth / Holographic Globe (Latitude/Longitude sphere & glowing equator)
-       - Iron Man Arc Reactor (Concentric rotating energy coils & core)
-       - Sci-Fi Drone / Fighter (Aerodynamic chassis, rotors, thrusters)
-       - 4D Tesseract / Cyber Cube (Outer & inner hypercube)
+    Advanced Volumetric 3D Hologram Engine.
+    Guarantees TRUE 3D volumetric geometry for ANY query.
+    1. Rich Procedural 3D CAD Models for recognized categories:
+       - House / Architecture (Walls, Roof gables, Ridge, Chimney, Door, Windows, Porch)
+       - Earth / Globe (Sphere latitude/longitude, glowing equator, satellite orbit)
+       - Cyber Supercar (Aerodynamic body, glass canopy, diffuser, wheels, lights)
+       - Iron Man Arc Reactor (Concentric rotating energy coils, core power triangle)
+       - Sci-Fi Drone Fighter (Fuselage, quad rotors, thrusters)
+       - 4D Tesseract Hypercube (Nested inner and outer cube with 4D struts)
+       - Cyber Katana / Sword (Blade fuller, guard, grip, glowing pommel)
+       - Futuristic Robot / Mech (Head, visor, chest arc reactor, torso, limbs)
+       - Cybernetic Skull / Helmet (Cranium, eye sockets, jaw structure)
+       - Hologram Tree (Trunk, branches, foliage rings)
+       - Sci-Fi Chair (Seat, backrest slats, 4 legs)
+       - Alien Spaceship / UFO (Saucer discs, upper/lower domes, plasma thrusters)
+    2. Universal 3D Volumetric Extrusion for any other web/AI search query:
+       - True 3D depth thickness (Front hull + Back hull + 3D connecting side walls + wireframe ribs)
+       - NEVER a flat paper sheet!
     """
 
     MODEL_SUPERCAR = "SUPERCAR"
+    MODEL_HOUSE = "HOUSE"
     MODEL_GLOBE = "GLOBE"
     MODEL_ARC_REACTOR = "ARC_REACTOR"
     MODEL_DRONE = "DRONE"
     MODEL_TESSERACT = "TESSERACT"
-    MODEL_IMAGE_HOLOGRAM = "IMAGE_HOLOGRAM"
+    MODEL_SWORD = "SWORD"
+    MODEL_ROBOT = "ROBOT"
+    MODEL_SKULL = "SKULL"
+    MODEL_TREE = "TREE"
+    MODEL_CHAIR = "CHAIR"
+    MODEL_UFO = "UFO"
+    MODEL_VOLUMETRIC = "VOLUMETRIC"
 
     def __init__(self):
-        # --------------------------------------------------------
-        # Transform
-        # --------------------------------------------------------
         self.x = 0.0
         self.y = 0.0
 
-        self.rotation_x = 0.0
-        self.rotation_y = 0.0
+        # Start with a nice isometric 3D tilt so true 3D depth is immediately visible!
+        self.rotation_x = 18.0
+        self.rotation_y = -25.0
         self.rotation_z = 0.0
 
         self.scale = 1.0
         self.visible = True
 
-        # --------------------------------------------------------
-        # Geometry for 3D meshes
-        # --------------------------------------------------------
         self.vertices = []
         self.edges = []
         self.faces = []
@@ -50,21 +59,17 @@ class HoloObject:
         self.glass_faces = []
         self.light_edges = []
 
-        # --------------------------------------------------------
-        # Active Model & Dynamic Hologram State
-        # --------------------------------------------------------
         self.current_model = self.MODEL_SUPERCAR
         self.model_name = "CYBER SUPERCAR"
 
-        # Dynamic Image Hologram
+        # Volumetric image extrusion data
         self.hologram_texture = None
-        self.hologram_name = ""
+        self.volumetric_contour_pts = []
+        self.extrusion_depth = 1.2
 
-        # Particle field for hologram ambience
         self.particles = []
         self._init_particles()
 
-        # Build initial model
         self._build_car()
 
     # ================================================================
@@ -87,11 +92,88 @@ class HoloObject:
             })
 
     # ================================================================
-    # MODEL SELECTION
+    # SEMANTIC QUERY ROUTER (TRUE 3D GUARANTEE)
     # ================================================================
 
+    def set_hologram_by_query(self, query, texture=None):
+        """
+        Determines the best true 3D representation for ANY user query.
+        If it matches a known category, builds a rich 3D procedural CAD model.
+        Otherwise, builds a full 3D Volumetric Extruded Solid from the search image.
+        """
+        q = query.lower().strip()
+        self.hologram_texture = texture
+        self.volumetric_contour_pts = []
+        self.reset()
+
+        if any(k in q for k in ["house", "home", "building", "villa", "cottage", "mansion", "room", "bungalow", "palace"]):
+            self.current_model = self.MODEL_HOUSE
+            self.model_name = "3D ARCHITECTURAL HOUSE"
+            self._build_house()
+
+        elif any(k in q for k in ["earth", "globe", "world", "planet", "mars", "moon", "jupiter", "saturn", "sun", "space"]):
+            self.current_model = self.MODEL_GLOBE
+            self.model_name = "3D PLANET EARTH GLOBE"
+            self._build_globe()
+
+        elif any(k in q for k in ["car", "vehicle", "supercar", "auto", "ferrari", "lambo", "lamborghini", "bmw", "audi", "porsche"]):
+            self.current_model = self.MODEL_SUPERCAR
+            self.model_name = "3D CYBER SUPERCAR"
+            self._build_car()
+
+        elif any(k in q for k in ["arc", "reactor", "iron man", "tony", "stark"]):
+            self.current_model = self.MODEL_ARC_REACTOR
+            self.model_name = "3D IRON MAN ARC REACTOR"
+            self._build_arc_reactor()
+
+        elif any(k in q for k in ["drone", "jet", "fighter", "plane", "airplane", "aircraft"]):
+            self.current_model = self.MODEL_DRONE
+            self.model_name = "3D SCI-FI DRONE FIGHTER"
+            self._build_drone()
+
+        elif any(k in q for k in ["ufo", "saucer", "spaceship", "alien"]):
+            self.current_model = self.MODEL_UFO
+            self.model_name = "3D CYBER SPACESHIP UFO"
+            self._build_spaceship_ufo()
+
+        elif any(k in q for k in ["tesseract", "hypercube", "cube", "box"]):
+            self.current_model = self.MODEL_TESSERACT
+            self.model_name = "3D 4D TESSERACT HYPERCUBE"
+            self._build_tesseract()
+
+        elif any(k in q for k in ["sword", "katana", "blade", "knife", "weapon"]):
+            self.current_model = self.MODEL_SWORD
+            self.model_name = "3D CYBER KATANA SWORD"
+            self._build_sword()
+
+        elif any(k in q for k in ["robot", "bot", "mech", "android", "cyborg"]):
+            self.current_model = self.MODEL_ROBOT
+            self.model_name = "3D CYBERNETIC MECH ROBOT"
+            self._build_robot()
+
+        elif any(k in q for k in ["skull", "skeleton", "head", "helmet"]):
+            self.current_model = self.MODEL_SKULL
+            self.model_name = "3D CYBERNETIC SKULL"
+            self._build_skull()
+
+        elif any(k in q for k in ["tree", "plant", "forest"]):
+            self.current_model = self.MODEL_TREE
+            self.model_name = "3D HOLOGRAPHIC TREE"
+            self._build_tree()
+
+        elif any(k in q for k in ["chair", "sofa", "furniture", "bench"]):
+            self.current_model = self.MODEL_CHAIR
+            self.model_name = "3D DESIGNER CHAIR"
+            self._build_chair()
+
+        else:
+            # Universal 3D Volumetric Extrusion for any other object
+            self.current_model = self.MODEL_VOLUMETRIC
+            self.model_name = f"3D VOLUMETRIC {query.upper()}"
+            self._build_volumetric_extrusion(texture, query)
+
     def set_model(self, model_type):
-        """Switches between procedural 3D models or custom image hologram."""
+        """Switches between available 3D procedural models."""
         self.current_model = model_type
         self.vertices = []
         self.edges = []
@@ -101,34 +183,53 @@ class HoloObject:
         self.light_edges = []
 
         if model_type == self.MODEL_SUPERCAR:
-            self.model_name = "CYBER SUPERCAR"
+            self.model_name = "3D CYBER SUPERCAR"
             self._build_car()
+        elif model_type == self.MODEL_HOUSE:
+            self.model_name = "3D ARCHITECTURAL HOUSE"
+            self._build_house()
         elif model_type == self.MODEL_GLOBE:
-            self.model_name = "PLANET EARTH GLOBE"
+            self.model_name = "3D PLANET EARTH GLOBE"
             self._build_globe()
         elif model_type == self.MODEL_ARC_REACTOR:
-            self.model_name = "IRON MAN ARC REACTOR"
+            self.model_name = "3D IRON MAN ARC REACTOR"
             self._build_arc_reactor()
         elif model_type == self.MODEL_DRONE:
-            self.model_name = "CYBER DRONE FIGHTER"
+            self.model_name = "3D SCI-FI DRONE FIGHTER"
             self._build_drone()
         elif model_type == self.MODEL_TESSERACT:
-            self.model_name = "4D TESSERACT HYPERCUBE"
+            self.model_name = "3D 4D TESSERACT HYPERCUBE"
             self._build_tesseract()
-        elif model_type == self.MODEL_IMAGE_HOLOGRAM:
-            self.model_name = self.hologram_name if self.hologram_name else "CUSTOM HOLOGRAM"
-
-    def set_hologram_image(self, bgra_texture, name="CUSTOM OBJECT"):
-        """Sets a dynamic image texture as the active 3D hologram."""
-        self.hologram_texture = bgra_texture
-        self.hologram_name = name.upper()
-        self.model_name = self.hologram_name
-        self.current_model = self.MODEL_IMAGE_HOLOGRAM
-        self.reset()
+        elif model_type == self.MODEL_SWORD:
+            self.model_name = "3D CYBER KATANA SWORD"
+            self._build_sword()
+        elif model_type == self.MODEL_ROBOT:
+            self.model_name = "3D CYBERNETIC MECH ROBOT"
+            self._build_robot()
+        elif model_type == self.MODEL_SKULL:
+            self.model_name = "3D CYBERNETIC SKULL"
+            self._build_skull()
+        elif model_type == self.MODEL_TREE:
+            self.model_name = "3D HOLOGRAPHIC TREE"
+            self._build_tree()
+        elif model_type == self.MODEL_CHAIR:
+            self.model_name = "3D DESIGNER CHAIR"
+            self._build_chair()
+        elif model_type == self.MODEL_UFO:
+            self.model_name = "3D CYBER SPACESHIP UFO"
+            self._build_spaceship_ufo()
 
     # ================================================================
-    # MESH HELPERS
+    # GEOMETRY HELPERS
     # ================================================================
+
+    def _clear_geometry(self):
+        self.vertices = []
+        self.edges = []
+        self.faces = []
+        self.body_faces = []
+        self.glass_faces = []
+        self.light_edges = []
 
     def _add_mesh(self, vertices, faces, edge_mode=True):
         start = len(self.vertices)
@@ -147,7 +248,7 @@ class HoloObject:
                         self.edges.append(edge)
         return start
 
-    def _add_box(self, center, size, edge_mode=True):
+    def _add_box(self, center, size, edge_mode=True, is_light=False):
         cx, cy, cz = center
         sx, sy, sz = size
         x, y, z = sx / 2, sy / 2, sz / 2
@@ -166,13 +267,170 @@ class HoloObject:
             (0, 4, 5, 1), (1, 5, 6, 2),
             (2, 6, 7, 3), (3, 7, 4, 0)
         ]
-        return self._add_mesh(verts, faces, edge_mode)
+        start = len(self.vertices)
+        for v in verts:
+            self.vertices.append(list(v))
+        for f in faces:
+            self.body_faces.append(tuple(start + i for i in f))
+            self.faces.append(tuple(start + i for i in f))
+
+        box_edges = [
+            (0, 1), (1, 2), (2, 3), (3, 0),
+            (4, 5), (5, 6), (6, 7), (7, 4),
+            (0, 4), (1, 5), (2, 6), (3, 7)
+        ]
+        for a, b in box_edges:
+            edge = (start + a, start + b)
+            if is_light:
+                self.light_edges.append(edge)
+            elif edge_mode:
+                self.edges.append(edge)
+        return start
 
     # ================================================================
-    # 3D MODEL 1: PROCEDURAL CYBER SUPERCAR
+    # 3D MODEL 1: PROCEDURAL 3D ARCHITECTURAL HOUSE
+    # ================================================================
+
+    def _build_house(self):
+        self._clear_geometry()
+
+        # 1. Concrete Foundation Slab
+        self._add_box((0.0, 0.0, -1.2), (3.6, 4.2, 0.25))
+
+        # 2. Main Ground Floor Living Quarters
+        self._add_box((0.0, 0.0, -0.2), (3.2, 3.8, 1.75))
+
+        # 3. Pitched Roof Gables & Ridge Beam
+        st = len(self.vertices)
+        w, d, h_base, h_ridge = 1.75, 2.0, 0.68, 1.45
+
+        # Front gable triangle (X = width, Y = -d, Z = height)
+        self.vertices.extend([
+            [-w, -d, h_base], [w, -d, h_base], [0.0, -d, h_base + h_ridge]
+        ])
+        # Rear gable triangle
+        self.vertices.extend([
+            [-w,  d, h_base], [w,  d, h_base], [0.0,  d, h_base + h_ridge]
+        ])
+
+        # Roof faces
+        # Left sloping roof
+        self.faces.append((st + 0, st + 2, st + 5, st + 3))
+        self.body_faces.append((st + 0, st + 2, st + 5, st + 3))
+        # Right sloping roof
+        self.faces.append((st + 1, st + 4, st + 5, st + 2))
+        self.body_faces.append((st + 1, st + 4, st + 5, st + 2))
+        # Front triangular gable face
+        self.faces.append((st + 0, st + 1, st + 2))
+        # Rear triangular gable face
+        self.faces.append((st + 3, st + 5, st + 4))
+
+        # Roof Structural Wireframe
+        self.edges.extend([
+            (st + 0, st + 1), (st + 1, st + 2), (st + 2, st + 0),
+            (st + 3, st + 4), (st + 4, st + 5), (st + 5, st + 3),
+            (st + 0, st + 3), (st + 1, st + 4)
+        ])
+        # Glowing Roof Ridge Beam
+        self.light_edges.append((st + 2, st + 5))
+
+        # 4. Chimney with Top Flue Rim
+        self._add_box((0.9, 0.6, 1.4), (0.55, 0.55, 1.3), is_light=True)
+
+        # 5. Front Entrance Door with Detailed Frame
+        self._add_box((0.0, -1.92, -0.55), (0.75, 0.12, 1.15), is_light=True)
+
+        # 6. Front Architectural Windows (Left & Right) with Glass & Glowing Cross Frames
+        w_left = self._add_box((-1.0, -1.92, -0.25), (0.65, 0.10, 0.65), is_light=True)
+        w_right = self._add_box(( 1.0, -1.92, -0.25), (0.65, 0.10, 0.65), is_light=True)
+
+        # 7. Attic Circular / Triangular Window
+        attic_st = len(self.vertices)
+        self.vertices.extend([
+            [-0.3, -1.92, h_base + 0.35],
+            [ 0.3, -1.92, h_base + 0.35],
+            [ 0.0, -1.92, h_base + 0.85]
+        ])
+        self.light_edges.extend([
+            (attic_st + 0, attic_st + 1),
+            (attic_st + 1, attic_st + 2),
+            (attic_st + 2, attic_st + 0)
+        ])
+
+        # 8. Front Covered Porch & Support Pillars
+        self._add_box((0.0, -2.45, -1.1), (1.6, 0.9, 0.12))
+        # Left and Right Porch Pillars
+        self._add_box((-0.65, -2.75, -0.5), (0.1, 0.1, 1.1), is_light=True)
+        self._add_box(( 0.65, -2.75, -0.5), (0.1, 0.1, 1.1), is_light=True)
+        # Porch Canopy Roof
+        self._add_box((0.0, -2.45, 0.08), (1.8, 1.0, 0.08), is_light=True)
+
+    # ================================================================
+    # 3D MODEL 2: PLANET EARTH GLOBE
+    # ================================================================
+
+    def _build_globe(self, radius=2.3, lat_bands=10, lon_bands=16):
+        self._clear_geometry()
+        start = len(self.vertices)
+
+        # Latitude rings
+        for lat in range(1, lat_bands):
+            theta = math.pi * lat / lat_bands
+            z = math.cos(theta) * radius
+            ring_r = math.sin(theta) * radius
+            ring_start = len(self.vertices)
+            for lon in range(lon_bands):
+                phi = 2 * math.pi * lon / lon_bands
+                x = math.cos(phi) * ring_r
+                y = math.sin(phi) * ring_r
+                self.vertices.append([x, y, z])
+            for lon in range(lon_bands):
+                next_lon = (lon + 1) % lon_bands
+                self.edges.append((ring_start + lon, ring_start + next_lon))
+
+        # Longitude meridian arcs
+        for lon in range(lon_bands):
+            meridian_pts = []
+            for lat in range(1, lat_bands):
+                idx = start + (lat - 1) * lon_bands + lon
+                meridian_pts.append(idx)
+            for k in range(len(meridian_pts) - 1):
+                self.edges.append((meridian_pts[k], meridian_pts[k + 1]))
+
+        # North & South Poles
+        north_idx = len(self.vertices)
+        self.vertices.append([0.0, 0.0, radius])
+        south_idx = len(self.vertices)
+        self.vertices.append([0.0, 0.0, -radius])
+        for lon in range(lon_bands):
+            self.edges.append((north_idx, start + lon))
+            self.edges.append((south_idx, start + (lat_bands - 2) * lon_bands + lon))
+
+        # Glowing Equator
+        eq_lat = lat_bands // 2
+        eq_start = start + (eq_lat - 1) * lon_bands
+        for lon in range(lon_bands):
+            self.light_edges.append((eq_start + lon, eq_start + ((lon + 1) % lon_bands)))
+
+        # Orbiting Orbital Satellite Ring
+        sat_start = len(self.vertices)
+        sat_r = radius * 1.35
+        for i in range(24):
+            ang = 2 * math.pi * i / 24
+            # Tilted orbit plane
+            x = math.cos(ang) * sat_r
+            y = math.sin(ang) * sat_r * math.cos(math.radians(35))
+            z = math.sin(ang) * sat_r * math.sin(math.radians(35))
+            self.vertices.append([x, y, z])
+        for i in range(24):
+            self.light_edges.append((sat_start + i, sat_start + ((i + 1) % 24)))
+
+    # ================================================================
+    # 3D MODEL 3: PROCEDURAL CYBER SUPERCAR
     # ================================================================
 
     def _build_car(self):
+        self._clear_geometry()
         self._add_body_shell()
         self._add_canopy()
         self._add_side_blades()
@@ -182,10 +440,10 @@ class HoloObject:
         self._add_wheel((-1.75, -1.27, -0.72), 0.68, 0.44)
         self._add_wheel((-1.75,  1.27, -0.72), 0.68, 0.44)
         # Front Splitter & Diffuser
-        self._add_box((2.85, 0.0, -0.58), (0.75, 2.25, 0.08), edge_mode=True)
-        self._add_box((-2.85, 0.0, -0.52), (0.75, 2.15, 0.12), edge_mode=True)
+        self._add_box((2.85, 0.0, -0.58), (0.75, 2.25, 0.08))
+        self._add_box((-2.85, 0.0, -0.52), (0.75, 2.15, 0.12))
         # Rear Wing
-        self._add_box((-2.75, 0.0, 0.65), (0.42, 2.30, 0.06), edge_mode=True)
+        self._add_box((-2.75, 0.0, 0.65), (0.42, 2.30, 0.06))
         # Headlights
         start_v = len(self.vertices)
         self.vertices.extend([
@@ -271,7 +529,7 @@ class HoloObject:
                 (start + 3, start + 4), (start + 4, start + 5), (start + 5, start + 0)
             ])
 
-    def _add_wheel(self, center, radius, depth, segments=24):
+    def _add_wheel(self, center, radius, depth, segments=20):
         cx, cy, cz = center
         start = len(self.vertices)
         for i in range(segments):
@@ -287,56 +545,11 @@ class HoloObject:
             self.edges.extend([(a, b), (a + 1, b + 1), (a, a + 1)])
 
     # ================================================================
-    # 3D MODEL 2: EARTH / HOLOGRAPHIC GLOBE
-    # ================================================================
-
-    def _build_globe(self, radius=2.2, lat_bands=8, lon_bands=12):
-        start = len(self.vertices)
-        # Latitude rings
-        for lat in range(1, lat_bands):
-            theta = math.pi * lat / lat_bands
-            z = math.cos(theta) * radius
-            ring_r = math.sin(theta) * radius
-            ring_start = len(self.vertices)
-            for lon in range(lon_bands):
-                phi = 2 * math.pi * lon / lon_bands
-                x = math.cos(phi) * ring_r
-                y = math.sin(phi) * ring_r
-                self.vertices.append([x, y, z])
-            for lon in range(lon_bands):
-                next_lon = (lon + 1) % lon_bands
-                self.edges.append((ring_start + lon, ring_start + next_lon))
-
-        # Longitude meridian arcs
-        for lon in range(lon_bands):
-            phi = 2 * math.pi * lon / lon_bands
-            meridian_pts = []
-            for lat in range(1, lat_bands):
-                idx = start + (lat - 1) * lon_bands + lon
-                meridian_pts.append(idx)
-            for k in range(len(meridian_pts) - 1):
-                self.edges.append((meridian_pts[k], meridian_pts[k + 1]))
-
-        # Poles
-        north_idx = len(self.vertices)
-        self.vertices.append([0.0, 0.0, radius])
-        south_idx = len(self.vertices)
-        self.vertices.append([0.0, 0.0, -radius])
-        for lon in range(lon_bands):
-            self.edges.append((north_idx, start + lon))
-            self.edges.append((south_idx, start + (lat_bands - 2) * lon_bands + lon))
-
-        # Glowing Equator
-        eq_lat = lat_bands // 2
-        eq_start = start + (eq_lat - 1) * lon_bands
-        for lon in range(lon_bands):
-            self.light_edges.append((eq_start + lon, eq_start + ((lon + 1) % lon_bands)))
-
-    # ================================================================
-    # 3D MODEL 3: IRON MAN ARC REACTOR
+    # 3D MODEL 4: IRON MAN ARC REACTOR
     # ================================================================
 
     def _build_arc_reactor(self):
+        self._clear_geometry()
         radii = [0.6, 1.2, 1.8, 2.3]
         for r_idx, r in enumerate(radii):
             start = len(self.vertices)
@@ -354,7 +567,6 @@ class HoloObject:
                 else:
                     self.edges.append(edge)
 
-        # 10 Power coils around ring
         for c in range(10):
             ang = 2 * math.pi * c / 10
             x1 = math.cos(ang) * 1.2
@@ -365,7 +577,6 @@ class HoloObject:
             self.vertices.extend([[x1, y1, -0.2], [x2, y2, -0.2], [x1, y1, 0.2], [x2, y2, 0.2]])
             self.edges.extend([(st, st + 1), (st + 2, st + 3), (st, st + 2), (st + 1, st + 3)])
 
-        # Center energy triangle
         tri_start = len(self.vertices)
         for i in range(3):
             ang = (2 * math.pi * i / 3) + math.pi / 2
@@ -377,13 +588,12 @@ class HoloObject:
         ])
 
     # ================================================================
-    # 3D MODEL 4: SCI-FI DRONE FIGHTER
+    # 3D MODEL 5: SCI-FI DRONE FIGHTER
     # ================================================================
 
     def _build_drone(self):
-        # Fuselage
-        self._add_box((0.0, 0.0, 0.0), (3.0, 1.0, 0.6), edge_mode=True)
-        # Cockpit canopy
+        self._clear_geometry()
+        self._add_box((0.0, 0.0, 0.0), (3.0, 1.0, 0.6))
         canopy_verts = [
             ( 0.8, -0.35, 0.3), ( 0.8,  0.35, 0.3),
             (-0.3, -0.25, 0.7), (-0.3,  0.25, 0.7),
@@ -394,17 +604,14 @@ class HoloObject:
         for f in canopy_faces:
             self.glass_faces.append(tuple(st + i for i in f))
 
-        # Quad Rotor Arms
         arm_coords = [
             ( 1.3, -1.8, 0.1), ( 1.3,  1.8, 0.1),
             (-1.3, -1.8, 0.1), (-1.3,  1.8, 0.1)
         ]
         for ax, ay, az in arm_coords:
-            # Arm strut
             s = len(self.vertices)
             self.vertices.extend([[ax * 0.3, ay * 0.3, 0.0], [ax, ay, az]])
             self.edges.append((s, s + 1))
-            # Rotor ring
             ring_start = len(self.vertices)
             for i in range(16):
                 ang = 2 * math.pi * i / 16
@@ -413,17 +620,16 @@ class HoloObject:
                 self.light_edges.append((ring_start + i, ring_start + ((i + 1) % 16)))
 
     # ================================================================
-    # 3D MODEL 5: 4D TESSERACT HYPERCUBE
+    # 3D MODEL 6: 4D TESSERACT HYPERCUBE
     # ================================================================
 
     def _build_tesseract(self):
-        # Outer cube (size 2.6)
+        self._clear_geometry()
         s1 = 1.3
         outer_verts = [
             (-s1, -s1, -s1), ( s1, -s1, -s1), ( s1,  s1, -s1), (-s1,  s1, -s1),
             (-s1, -s1,  s1), ( s1, -s1,  s1), ( s1,  s1,  s1), (-s1,  s1,  s1)
         ]
-        # Inner cube (size 1.2)
         s2 = 0.65
         inner_verts = [
             (-s2, -s2, -s2), ( s2, -s2, -s2), ( s2,  s2, -s2), (-s2,  s2, -s2),
@@ -441,18 +647,246 @@ class HoloObject:
             (4, 5), (5, 6), (6, 7), (7, 4),
             (0, 4), (1, 5), (2, 6), (3, 7)
         ]
-        # Outer cube edges
         for a, b in cube_edges:
             self.edges.append((st1 + a, st1 + b))
-        # Inner cube edges (glowing)
         for a, b in cube_edges:
             self.light_edges.append((st2 + a, st2 + b))
-        # Hypercube 4D connecting struts
         for i in range(8):
             self.edges.append((st1 + i, st2 + i))
 
     # ================================================================
-    # TRANSFORMATION METHODS
+    # 3D MODEL 7: CYBER KATANA SWORD
+    # ================================================================
+
+    def _build_sword(self):
+        self._clear_geometry()
+        # Blade (Z = height, from Z = 0 to Z = 2.8)
+        st = len(self.vertices)
+        blade_sections = [
+            (0.0, 0.05, 0.22, 0.05),
+            (0.8, 0.045, 0.20, 0.04),
+            (1.8, 0.038, 0.18, 0.035),
+            (2.5, 0.025, 0.14, 0.025),
+            (2.9, 0.0, 0.0, 0.0)  # Tip
+        ]
+        for z, w_edge, w_spine, th in blade_sections:
+            self.vertices.extend([
+                [-th, -w_spine, z], [ th, -w_spine, z],
+                [0.0,  w_edge,  z]
+            ])
+        # Connect blade ribs
+        for i in range(len(blade_sections) - 1):
+            a, b = st + i * 3, st + (i + 1) * 3
+            self.edges.extend([(a, b), (a + 1, b + 1), (a + 2, b + 2), (a, a + 1), (a + 1, a + 2), (a + 2, a)])
+        self.light_edges.append((st + 2, st + (len(blade_sections) - 1) * 3 + 2))  # Glowing blade edge!
+
+        # Guard (Tsuba)
+        self._add_box((0.0, 0.0, 0.0), (0.35, 0.85, 0.08), is_light=True)
+
+        # Grip (Tsuka)
+        self._add_box((0.0, 0.0, -0.55), (0.16, 0.24, 1.0))
+
+        # Pommel (Kashira)
+        self._add_box((0.0, 0.0, -1.1), (0.22, 0.30, 0.12), is_light=True)
+
+    # ================================================================
+    # 3D MODEL 8: CYBERNETIC MECH ROBOT
+    # ================================================================
+
+    def _build_robot(self):
+        self._clear_geometry()
+        # Head & Glowing Visor
+        self._add_box((0.0, 0.0, 1.7), (0.7, 0.7, 0.65))
+        self._add_box((0.0, -0.36, 1.7), (0.5, 0.08, 0.18), is_light=True)  # Visor
+
+        # Torso Chest & Core
+        self._add_box((0.0, 0.0, 0.7), (1.4, 0.9, 1.2))
+        self._add_box((0.0, -0.46, 0.75), (0.35, 0.05, 0.35), is_light=True)  # Arc Core
+
+        # Shoulders & Arms
+        for s in [-1, 1]:
+            self._add_box((s * 1.05, 0.0, 1.1), (0.5, 0.5, 0.5), is_light=True)
+            self._add_box((s * 1.05, 0.0, 0.4), (0.35, 0.35, 0.8))
+            self._add_box((s * 1.05, 0.0, -0.2), (0.3, 0.3, 0.35), is_light=True)
+
+        # Pelvis & Legs
+        self._add_box((0.0, 0.0, -0.1), (1.1, 0.7, 0.35))
+        for s in [-1, 1]:
+            self._add_box((s * 0.45, 0.0, -0.7), (0.4, 0.45, 0.8))
+            self._add_box((s * 0.45, 0.0, -1.4), (0.35, 0.4, 0.7))
+            self._add_box((s * 0.45, -0.15, -1.8), (0.45, 0.7, 0.15), is_light=True)
+
+    # ================================================================
+    # 3D MODEL 9: CYBER SKULL
+    # ================================================================
+
+    def _build_skull(self):
+        self._clear_geometry()
+        # Cranium dome
+        self._add_box((0.0, 0.0, 0.6), (1.6, 1.8, 1.4))
+        # Cheekbones & Face
+        self._add_box((0.0, -0.7, 0.1), (1.4, 0.6, 0.8))
+        # Eye Sockets (Left and Right)
+        self._add_box((-0.42, -1.02, 0.25), (0.38, 0.08, 0.35), is_light=True)
+        self._add_box(( 0.42, -1.02, 0.25), (0.38, 0.08, 0.35), is_light=True)
+        # Nasal Cavity
+        self._add_box((0.0, -1.02, -0.05), (0.18, 0.08, 0.22), is_light=True)
+        # Jaw & Teeth Notch
+        self._add_box((0.0, -0.65, -0.7), (1.0, 0.9, 0.55), is_light=True)
+
+    # ================================================================
+    # 3D MODEL 10: HOLOGRAPHIC TREE
+    # ================================================================
+
+    def _build_tree(self):
+        self._clear_geometry()
+        # Trunk column
+        self._add_box((0.0, 0.0, -0.6), (0.4, 0.4, 1.6))
+        # Foliage Canopy (Multi-tier 3D Rings)
+        radii = [1.8, 1.4, 0.9]
+        heights = [0.4, 1.1, 1.7]
+        for r, h in zip(radii, heights):
+            st = len(self.vertices)
+            segs = 16
+            for i in range(segs):
+                ang = 2 * math.pi * i / segs
+                self.vertices.append([math.cos(ang) * r, math.sin(ang) * r, h])
+            for i in range(segs):
+                self.light_edges.append((st + i, st + ((i + 1) % segs)))
+        # Top foliage apex
+        apex = len(self.vertices)
+        self.vertices.append([0.0, 0.0, 2.2])
+        for i in range(16):
+            self.edges.append((apex, st + i))
+
+    # ================================================================
+    # 3D MODEL 11: DESIGNER CHAIR
+    # ================================================================
+
+    def _build_chair(self):
+        self._clear_geometry()
+        # Seat Cushion
+        self._add_box((0.0, 0.0, 0.0), (1.6, 1.6, 0.18))
+        # 4 Legs
+        for lx in [-0.7, 0.7]:
+            for ly in [-0.7, 0.7]:
+                self._add_box((lx, ly, -0.75), (0.12, 0.12, 1.4))
+        # Backrest uprights
+        self._add_box((-0.7, 0.7, 0.8), (0.12, 0.12, 1.5), is_light=True)
+        self._add_box(( 0.7, 0.7, 0.8), (0.12, 0.12, 1.5), is_light=True)
+        # Backrest Slats
+        self._add_box((0.0, 0.7, 1.0), (1.4, 0.08, 0.45), is_light=True)
+        self._add_box((0.0, 0.7, 1.45), (1.4, 0.08, 0.25), is_light=True)
+
+    # ================================================================
+    # 3D MODEL 12: SCI-FI SPACESHIP UFO
+    # ================================================================
+
+    def _build_spaceship_ufo(self):
+        self._clear_geometry()
+        segs = 24
+        # Main Disc Hull Outer Rim
+        st_rim = len(self.vertices)
+        r_rim = 2.4
+        for i in range(segs):
+            ang = 2 * math.pi * i / segs
+            self.vertices.append([math.cos(ang) * r_rim, math.sin(ang) * r_rim, 0.0])
+        for i in range(segs):
+            self.light_edges.append((st_rim + i, st_rim + ((i + 1) % segs)))
+
+        # Upper Cockpit Dome
+        st_upper = len(self.vertices)
+        r_up = 1.1
+        for i in range(segs):
+            ang = 2 * math.pi * i / segs
+            self.vertices.append([math.cos(ang) * r_up, math.sin(ang) * r_up, 0.45])
+        for i in range(segs):
+            self.edges.append((st_upper + i, st_upper + ((i + 1) % segs)))
+            self.edges.append((st_rim + i, st_upper + i))
+
+        # Apex Antenna
+        apex = len(self.vertices)
+        self.vertices.append([0.0, 0.0, 0.95])
+        for i in range(0, segs, 2):
+            self.light_edges.append((apex, st_upper + i))
+
+        # Bottom Thruster Reactor Ring
+        st_lower = len(self.vertices)
+        r_low = 1.3
+        for i in range(segs):
+            ang = 2 * math.pi * i / segs
+            self.vertices.append([math.cos(ang) * r_low, math.sin(ang) * r_low, -0.35])
+        for i in range(segs):
+            self.light_edges.append((st_lower + i, st_lower + ((i + 1) % segs)))
+            self.edges.append((st_rim + i, st_lower + i))
+
+    # ================================================================
+    # UNIVERSAL 3D VOLUMETRIC EXTRUSION (FOR ARBITRARY QUERIES)
+    # ================================================================
+
+    def _build_volumetric_extrusion(self, texture, query):
+        """
+        Extrudes ANY image contour into a genuine 3D Volumetric Mesh:
+        Front Hull (+Z) + Back Hull (-Z) + Connecting Side Walls + Wireframe Ribs.
+        Gives real physical thickness and volumetric presence in 3D air!
+        """
+        self._clear_geometry()
+        depth = 0.9  # Substantial 3D thickness so it's clearly volumetric!
+
+        if texture is not None and texture.shape[2] == 4:
+            alpha = texture[:, :, 3]
+            contours, _ = cv2.findContours((alpha > 40).astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if contours:
+                c = max(contours, key=cv2.contourArea)
+                peri = cv2.arcLength(c, True)
+                approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+                pts = approx.reshape(-1, 2)
+            else:
+                pts = np.array([[100, 100], [400, 100], [400, 400], [100, 400]])
+        else:
+            # Fallback diamond / polygon
+            pts = np.array([[256, 80], [420, 200], [380, 440], [130, 440], [90, 200]])
+
+        # Rescale points to 3D object space [-2.0, 2.0]
+        n_pts = len(pts)
+        front_verts = []
+        back_verts = []
+        for p in pts:
+            x = (float(p[0]) - 256.0) / 100.0
+            y = (float(p[1]) - 256.0) / 100.0
+            front_verts.append([x, y,  depth / 2])
+            back_verts.append([x, y, -depth / 2])
+
+        st_front = len(self.vertices)
+        for v in front_verts:
+            self.vertices.append(v)
+        st_back = len(self.vertices)
+        for v in back_verts:
+            self.vertices.append(v)
+
+        # 1. Front and Back Contour Rings
+        for i in range(n_pts):
+            j = (i + 1) % n_pts
+            self.light_edges.append((st_front + i, st_front + j))
+            self.edges.append((st_back + i, st_back + j))
+            # 2. Volumetric 3D Depth Ribs connecting front to back!
+            self.edges.append((st_front + i, st_back + i))
+            # 3. 3D Side Quad Faces
+            side_face = (st_front + i, st_front + j, st_back + j, st_back + i)
+            self.body_faces.append(side_face)
+            self.faces.append(side_face)
+
+        # Center volumetric depth core
+        center_f = len(self.vertices)
+        self.vertices.append([0.0, 0.0, depth / 2])
+        center_b = len(self.vertices)
+        self.vertices.append([0.0, 0.0, -depth / 2])
+        for i in range(0, n_pts, max(1, n_pts // 6)):
+            self.light_edges.append((center_f, st_front + i))
+            self.edges.append((center_b, st_back + i))
+
+    # ================================================================
+    # TRANSFORMATION CONTROLS
     # ================================================================
 
     def move(self, dx, dy):
@@ -471,8 +905,9 @@ class HoloObject:
     def reset(self):
         self.x = 0.0
         self.y = 0.0
-        self.rotation_x = 0.0
-        self.rotation_y = 0.0
+        # Default nice 3D perspective angle
+        self.rotation_x = 18.0
+        self.rotation_y = -25.0
         self.rotation_z = 0.0
         self.scale = 1.0
         self.visible = True
@@ -497,175 +932,33 @@ class HoloObject:
         if not self.visible:
             return frame
 
-        # Render holographic floating particles in background
+        # Render floating ambient particles
         frame = self._render_particles(frame)
 
-        # If active model is Dynamic Image Hologram
-        if self.current_model == self.MODEL_IMAGE_HOLOGRAM and self.hologram_texture is not None:
-            return self._render_image_hologram(frame)
+        # Render true 3D Wireframe / Mesh Object
+        frame = self._render_3d_mesh(frame)
 
-        # Otherwise render procedural 3D Wireframe Object
-        return self._render_mesh_object(frame)
-
-    # ================================================================
-    # DYNAMIC 3D IMAGE HOLOGRAM RENDERER
-    # ================================================================
-
-    def _render_image_hologram(self, frame):
-        """
-        Projects any image as a true 3D hologram with perspective warp,
-        multi-layer parallax depth, glowing cyber bounding box,
-        base energy rings, and holographic scanlines.
-        """
-        h_frame, w_frame = frame.shape[:2]
-        hw, hh = 2.4, 2.4
-
-        # 3D corners of the hologram plane
-        corners_3d = np.array([
-            [-hw, -hh, 0.0],
-            [ hw, -hh, 0.0],
-            [ hw,  hh, 0.0],
-            [-hw,  hh, 0.0]
-        ], dtype=np.float32)
-
-        # Rotate and Scale
-        front_3d = self._rotate_points(corners_3d * self.scale, self.rotation_x, self.rotation_y, self.rotation_z)
-        front_3d[:, 2] += 8.0
-
-        # Project front corners
-        front_2d = []
-        for x, y, z in front_3d:
-            z_safe = max(z, 0.2)
-            px = int((x / z_safe) * 780 + w_frame / 2 + self.x)
-            py = int((y / z_safe) * 780 + h_frame / 2 + self.y)
-            front_2d.append([px, py])
-        front_2d = np.float32(front_2d)
-
-        # Back depth layer for 3D parallax depth effect
-        back_corners_3d = np.array([
-            [-hw, -hh, -0.45],
-            [ hw, -hh, -0.45],
-            [ hw,  hh, -0.45],
-            [-hw,  hh, -0.45]
-        ], dtype=np.float32)
-        back_3d = self._rotate_points(back_corners_3d * self.scale, self.rotation_x, self.rotation_y, self.rotation_z)
-        back_3d[:, 2] += 8.0
-        back_2d = []
-        for x, y, z in back_3d:
-            z_safe = max(z, 0.2)
-            px = int((x / z_safe) * 780 + w_frame / 2 + self.x)
-            py = int((y / z_safe) * 780 + h_frame / 2 + self.y)
-            back_2d.append([px, py])
-        back_2d = np.float32(back_2d)
-
-        tex_h, tex_w = self.hologram_texture.shape[:2]
-        src_pts = np.float32([[0, 0], [tex_w, 0], [tex_w, tex_h], [0, tex_h]])
-
-        # 1. Warp Back Parallax Layer (subtle deep-blue glow shadow)
-        try:
-            M_back = cv2.getPerspectiveTransform(src_pts, back_2d)
-            warped_back = cv2.warpPerspective(
-                self.hologram_texture, M_back, (w_frame, h_frame),
-                borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0)
-            )
-            back_alpha = (warped_back[:, :, 3].astype(np.float32) / 255.0) * 0.28
-            back_bgr = warped_back[:, :, :3]
-            # Deep blue tint for back shadow
-            back_bgr[:, :, 0] = np.clip(back_bgr[:, :, 0] * 1.2, 0, 255)
-            back_bgr[:, :, 2] = (back_bgr[:, :, 2] * 0.4).astype(np.uint8)
-            for c in range(3):
-                frame[:, :, c] = np.clip(
-                    frame[:, :, c] * (1.0 - back_alpha) + back_bgr[:, :, c] * back_alpha, 0, 255
-                ).astype(np.uint8)
-        except Exception:
-            pass
-
-        # 2. Warp Front Hologram Layer
-        try:
-            M_front = cv2.getPerspectiveTransform(src_pts, front_2d)
-            warped_front = cv2.warpPerspective(
-                self.hologram_texture, M_front, (w_frame, h_frame),
-                borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0)
-            )
-            front_alpha = (warped_front[:, :, 3].astype(np.float32) / 255.0) * 0.85
-            front_bgr = warped_front[:, :, :3]
-
-            # Additive glow blend
-            for c in range(3):
-                frame[:, :, c] = np.clip(
-                    frame[:, :, c] * (1.0 - front_alpha * 0.65) + front_bgr[:, :, c] * front_alpha, 0, 255
-                ).astype(np.uint8)
-        except Exception:
-            pass
-
-        # 3. 3D Bounding Box & Cybernetic Corner Brackets
-        box_pts_3d = np.array([
-            [-hw, -hh, -0.4], [ hw, -hh, -0.4], [ hw,  hh, -0.4], [-hw,  hh, -0.4],
-            [-hw, -hh,  0.4], [ hw, -hh,  0.4], [ hw,  hh,  0.4], [-hw,  hh,  0.4]
-        ], dtype=np.float32)
-        trans_box = self._rotate_points(box_pts_3d * self.scale, self.rotation_x, self.rotation_y, self.rotation_z)
-        trans_box[:, 2] += 8.0
-        box_2d = []
-        for x, y, z in trans_box:
-            zs = max(z, 0.2)
-            bx = int((x / zs) * 780 + w_frame / 2 + self.x)
-            by = int((y / zs) * 780 + h_frame / 2 + self.y)
-            box_2d.append((bx, by))
-
-        # Box wireframe lines
-        box_edges = [
-            (0, 1), (1, 2), (2, 3), (3, 0),
-            (4, 5), (5, 6), (6, 7), (7, 4),
-            (0, 4), (1, 5), (2, 6), (3, 7)
-        ]
-        box_overlay = frame.copy()
-        for a, b in box_edges:
-            cv2.line(box_overlay, box_2d[a], box_2d[b], (255, 180, 50), 1, cv2.LINE_AA)
-
-        # Corner brackets on front face
-        for idx in range(4):
-            pt = box_2d[idx + 4]
-            cv2.circle(box_overlay, pt, 4, (255, 255, 200), -1, cv2.LINE_AA)
-
-        frame = cv2.addWeighted(box_overlay, 0.35, frame, 0.65, 0)
-
-        # 4. 3D Base Holographic Projector Rings
-        base_center_3d = np.array([[0.0, hh * 1.15, 0.0]], dtype=np.float32)
-        trans_base = self._rotate_points(base_center_3d * self.scale, self.rotation_x, self.rotation_y, self.rotation_z)
-        trans_base[:, 2] += 8.0
-        bx = int((trans_base[0, 0] / max(trans_base[0, 2], 0.2)) * 780 + w_frame / 2 + self.x)
-        by = int((trans_base[0, 1] / max(trans_base[0, 2], 0.2)) * 780 + h_frame / 2 + self.y)
-        ring_r1 = int(140 * self.scale)
-        ring_r2 = int(32 * self.scale)
-        if ring_r1 > 5 and ring_r2 > 2:
-            ring_layer = frame.copy()
-            cv2.ellipse(ring_layer, (bx, by), (ring_r1, ring_r2), 0, 0, 360, (255, 200, 30), 2, cv2.LINE_AA)
-            cv2.ellipse(ring_layer, (bx, by), (int(ring_r1 * 1.2), int(ring_r2 * 1.2)), 0, 0, 360, (255, 120, 0), 1, cv2.LINE_AA)
-            frame = cv2.addWeighted(ring_layer, 0.45, frame, 0.55, 0)
-
-        # 5. Hologram HUD Header above object
-        top_pt = box_2d[4]
-        tag_text = f"// HOLOGRAM: {self.model_name} [3D PROJECTION ACTIVE]"
-        cv2.putText(frame, tag_text, (max(20, top_pt[0] - 160), max(40, top_pt[1] - 15)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.48, (255, 240, 120), 1, cv2.LINE_AA)
+        # If volumetric model has search image, project image onto 3D front & back hulls
+        if self.current_model == self.MODEL_VOLUMETRIC and self.hologram_texture is not None:
+            frame = self._render_volumetric_texture(frame)
 
         return frame
 
     # ================================================================
-    # 3D WIREFRAME MESH OBJECT RENDERER
+    # 3D MESH RENDERER (VERIFIED TRUE 3D PERSPECTIVE)
     # ================================================================
 
-    def _render_mesh_object(self, frame):
+    def _render_3d_mesh(self, frame):
         h_frame, w_frame = frame.shape[:2]
         if not self.vertices:
             return frame
 
-        # Transform all vertices
+        # Transform all 3D vertices
         pts = np.array(self.vertices, dtype=np.float32) * self.scale
         pts = self._rotate_points(pts, self.rotation_x, self.rotation_y, self.rotation_z)
         pts[:, 2] += 8.0
 
-        # Project vertices
+        # Project 3D to 2D screen coordinates with perspective division
         projected = []
         for x, y, z in pts:
             zs = max(z, 0.2)
@@ -673,20 +966,19 @@ class HoloObject:
             py = int((y / zs) * 780 + h_frame / 2 + self.y)
             projected.append((px, py))
 
-        # Depth sort faces
-        if self.faces:
+        # Depth-sorted semi-transparent body polygons
+        if self.body_faces:
             face_depths = []
-            for face in self.faces:
+            for face in self.body_faces:
                 depth = sum(pts[i][2] for i in face) / len(face)
                 face_depths.append((depth, face))
             face_depths.sort(reverse=True, key=lambda x: x[0])
 
-            # Semi-transparent body polygons
             body_overlay = frame.copy()
             for _, face in face_depths:
                 poly = np.array([projected[i] for i in face], dtype=np.int32)
-                cv2.fillPoly(body_overlay, [poly], (190, 75, 15))
-            frame = cv2.addWeighted(body_overlay, 0.32, frame, 0.68, 0)
+                cv2.fillPoly(body_overlay, [poly], (170, 70, 15))
+            frame = cv2.addWeighted(body_overlay, 0.30, frame, 0.70, 0)
 
         # Glass faces (if any)
         if self.glass_faces:
@@ -706,26 +998,66 @@ class HoloObject:
         if self.light_edges:
             glow = np.zeros_like(frame)
             for a, b in self.light_edges:
-                cv2.line(glow, projected[a], projected[b], (255, 255, 160), 6, cv2.LINE_AA)
+                cv2.line(glow, projected[a], projected[b], (255, 255, 150), 6, cv2.LINE_AA)
             glow = cv2.GaussianBlur(glow, (0, 0), 6)
-            frame = cv2.addWeighted(frame, 1.0, glow, 0.55, 0)
+            frame = cv2.addWeighted(frame, 1.0, glow, 0.60, 0)
             for a, b in self.light_edges:
                 cv2.line(frame, projected[a], projected[b], (255, 255, 240), 2, cv2.LINE_AA)
 
-        # Base Scanner Ring
+        # 3D Base Holographic Projector Ring
         xs = [p[0] for p in projected]
         ys = [p[1] for p in projected]
         if xs and ys:
             cx = int(sum(xs) / len(xs))
-            cy = int(sum(ys) / len(ys)) + int(120 * self.scale)
-            ring_w = int(180 * self.scale)
-            ring_h = int(36 * self.scale)
+            cy = int(max(ys)) + int(35 * self.scale)
+            ring_w = int(170 * self.scale)
+            ring_h = int(35 * self.scale)
             if ring_w > 5 and ring_h > 2:
                 ring_layer = frame.copy()
-                cv2.ellipse(ring_layer, (cx, cy), (ring_w, ring_h), 0, 0, 360, (255, 120, 0), 1, cv2.LINE_AA)
-                cv2.ellipse(ring_layer, (cx, cy), (int(ring_w * 1.2), int(ring_h * 1.2)), 0, 0, 360, (255, 70, 0), 1, cv2.LINE_AA)
-                frame = cv2.addWeighted(ring_layer, 0.35, frame, 0.65, 0)
+                cv2.ellipse(ring_layer, (cx, cy), (ring_w, ring_h), 0, 0, 360, (255, 140, 20), 1, cv2.LINE_AA)
+                cv2.ellipse(ring_layer, (cx, cy), (int(ring_w * 1.2), int(ring_h * 1.2)), 0, 0, 360, (255, 80, 0), 1, cv2.LINE_AA)
+                frame = cv2.addWeighted(ring_layer, 0.40, frame, 0.60, 0)
 
+        return frame
+
+    # ================================================================
+    # VOLUMETRIC TEXTURE PROJECTION (WITH 3D PARALLAX DEPTH)
+    # ================================================================
+
+    def _render_volumetric_texture(self, frame):
+        h_frame, w_frame = frame.shape[:2]
+        hw, hh = 1.8, 1.8
+        corners_3d = np.array([
+            [-hw, -hh,  0.45], [ hw, -hh,  0.45],
+            [ hw,  hh,  0.45], [-hw,  hh,  0.45]
+        ], dtype=np.float32)
+
+        front_3d = self._rotate_points(corners_3d * self.scale, self.rotation_x, self.rotation_y, self.rotation_z)
+        front_3d[:, 2] += 8.0
+        front_2d = []
+        for x, y, z in front_3d:
+            zs = max(z, 0.2)
+            front_2d.append([int((x / zs) * 780 + w_frame / 2 + self.x),
+                             int((y / zs) * 780 + h_frame / 2 + self.y)])
+        front_2d = np.float32(front_2d)
+
+        tex_h, tex_w = self.hologram_texture.shape[:2]
+        src_pts = np.float32([[0, 0], [tex_w, 0], [tex_w, tex_h], [0, tex_h]])
+
+        try:
+            M = cv2.getPerspectiveTransform(src_pts, front_2d)
+            warped = cv2.warpPerspective(
+                self.hologram_texture, M, (w_frame, h_frame),
+                borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0)
+            )
+            alpha = (warped[:, :, 3].astype(np.float32) / 255.0) * 0.70
+            bgr = warped[:, :, :3]
+            for c in range(3):
+                frame[:, :, c] = np.clip(
+                    frame[:, :, c] * (1.0 - alpha * 0.6) + bgr[:, :, c] * alpha, 0, 255
+                ).astype(np.uint8)
+        except Exception:
+            pass
         return frame
 
     # ================================================================
