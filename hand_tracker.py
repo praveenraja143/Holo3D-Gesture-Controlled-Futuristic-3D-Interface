@@ -1,5 +1,13 @@
 import cv2
-import mediapipe as mp
+
+try:
+    import mediapipe.python.solutions as mp_solutions
+    mp_hands = mp_solutions.hands
+    mp_draw = mp_solutions.drawing_utils
+except Exception:
+    import mediapipe as mp
+    mp_hands = mp.solutions.hands
+    mp_draw = mp.solutions.drawing_utils
 
 
 class HandTracker:
@@ -11,8 +19,8 @@ class HandTracker:
         tracking_confidence=0.7
     ):
 
-        self.mp_hands = mp.solutions.hands
-        self.mp_draw = mp.solutions.drawing_utils
+        self.mp_hands = mp_hands
+        self.mp_draw = mp_draw
 
         self.hands = self.mp_hands.Hands(
             static_image_mode=False,
